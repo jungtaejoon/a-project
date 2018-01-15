@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Paper.vue should render correct contents 1`] = `
+<div>
+    <div id="paragraphHistory-0">
+        <textarea name="" id="paragraph-1"></textarea>
+    </div>
+    <button>단락 추가</button>
+</div>
+`;
+
+exports[`Paper.vue 초기 세팅이 성공해야 한다 1`] = `
+<div>
+    <div id="paragraphHistory-0">
+        <textarea name="" id="paragraph-1"></textarea>
+    </div>
+    <button>단락 추가</button>
+</div>
+`;
