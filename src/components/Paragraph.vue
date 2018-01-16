@@ -3,10 +3,7 @@
     name=""
     :id="ID_PREFIX + id"
     v-model="content"
-    :class="{dived:!isFocused}"
-    @keydown.prevent.enter="$emit('need-new-paragraph')"
-    @focus="isFocused = true"
-    @blur="isFocused = false"
+    @keydown.prevent.enter="createParagraph"
     @keydown.delete="onContentEmpty"
   ></textarea>
 </template>
@@ -19,23 +16,38 @@ export default {
   props: {
     id: {
       required: true
+    },
+    initContent: {
+      required: false
     }
   },
   mounted () {
     autosize(this.$el)
     this.$el.focus()
+    this.$emit('paragraph-mounted')
   },
   data () {
     return {
       ID_PREFIX: 'paragraph-',
-      content: '',
-      isFocused: false
+      confirmedContent: '',
+      content: this.initContent,
+      isLast: true
     }
   },
   methods: {
     onContentEmpty () {
       if (!this.content) {
         this.$emit('delete-paragraph', this.id)
+      }
+    },
+    createParagraph () {
+      if (!this.confirmedContent || this.confirmedContent === this.content) {
+        this.confirmedContent = this.content
+        this.$emit('need-new-paragraph')
+      } else if (this.confirmedContent !== this.content) {
+        this.$emit('content-changed', this.content)
+        this.content = this.confirmedContent
+        this.isLast = false
       }
     }
   }
@@ -45,8 +57,11 @@ export default {
 <style scoped>
 textarea {
   resize: none;
+  width: 100%;
+  padding: 3px;
+  border: 0px;
 }
-  .dived {
-    border: 0px;
-  }
+textarea:focus {
+  outline: none !important;
+}
 </style>

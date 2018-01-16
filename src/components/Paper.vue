@@ -1,5 +1,6 @@
 <template>
   <div>
+    <button @click="createParagraphHistory">단락 추가</button>
     <paragraph-history
       v-for="paragraphHistory in paragraphHistories"
       :key="paragraphHistory"
@@ -7,7 +8,6 @@
       @need-new-paragraph="createParagraphHistory"
       @delete-paragraph-history="deleteParagraphHistory"
     />
-    <button @click="createParagraphHistory">단락 추가</button>
   </div>
 </template>
 

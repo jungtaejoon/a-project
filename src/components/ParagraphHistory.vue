@@ -1,17 +1,21 @@
 <template>
-  <div :id="ID_PREFIX + id">
-    <paragraph
+  <div :id="ID_PREFIX + id" class="paragraph-history">
+    <paragraph-container
       v-for="paragraph in paragraphs"
       :key="paragraph"
       :id="paragraph"
+      :initContent="lastContent"
       @need-new-paragraph="$emit('need-new-paragraph', id)"
       @delete-paragraph="deleteParagraph"
+      @content-changed="onContentChanged"
+      @paragraph-mounted="lastContent = ''"
     />
   </div>
 </template>
 
 <script>
-import Paragraph from './Paragraph'
+import ParagraphContainer from './ParagraphContainer'
+
 let nextParagraphId = 0
 export default {
   props: {
@@ -20,12 +24,13 @@ export default {
     }
   },
   components: {
-    Paragraph
+    ParagraphContainer
   },
   data () {
     return {
       ID_PREFIX: 'paragraphHistory-',
-      paragraphs: []
+      paragraphs: [],
+      lastContent: ''
     }
   },
   created () {
@@ -43,11 +48,17 @@ export default {
       if (!this.paragraphs.length) {
         this.$emit('delete-paragraph-history', this.id)
       }
+    },
+    onContentChanged (newContent) {
+      this.lastContent = newContent
+      this.createParagraph()
     }
   }
 }
 </script>
 
 <style scoped>
+.paragraph-history {
 
+}
 </style>
