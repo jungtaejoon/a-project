@@ -23,7 +23,9 @@ export default {
   },
   mounted () {
     autosize(this.$el)
-    this.$el.focus()
+    if (!this.initContent) {
+      this.$el.focus()
+    }
     this.$emit('paragraph-mounted')
   },
   data () {
