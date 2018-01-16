@@ -6,12 +6,6 @@ import router from './router'
 
 Vue.config.productionTip = false
 
-Vue.directive('focus', {
-  inserted: function (el) {
-    el.focus()
-  }
-})
-
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

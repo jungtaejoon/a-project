@@ -9,7 +9,8 @@
 
 export default {}
 </script>
-
+<style src="./assets/css/app.css"></style>
+<style src="./assets/css/custom.css"></style>
 <style>
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
