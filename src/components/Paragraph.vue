@@ -5,6 +5,7 @@
     v-model="content"
     @keydown.prevent.enter="createParagraph"
     @keydown.delete="onContentEmpty"
+    @keydown.prevent.enter.shift.exact="newLine"
   ></textarea>
 </template>
 
@@ -23,17 +24,14 @@ export default {
   },
   mounted () {
     autosize(this.$el)
-    if (!this.initContent) {
-      this.$el.focus()
-    }
+    this.$el.focus()
     this.$emit('paragraph-mounted')
   },
   data () {
     return {
       ID_PREFIX: 'paragraph-',
-      confirmedContent: '',
-      content: this.initContent,
-      isLast: true
+      confirmedContent: this.initContent,
+      content: this.initContent
     }
   },
   methods: {
@@ -51,6 +49,9 @@ export default {
         this.content = this.confirmedContent
         this.isLast = false
       }
+    },
+    newLine () {
+      this.content += '\n'
     }
   }
 }

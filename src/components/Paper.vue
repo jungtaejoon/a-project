@@ -3,13 +3,14 @@
     <button @click="createParagraphHistory">단락 추가</button>
     <paragraph-history
       class="color-item"
-      v-for="paragraphHistory in paragraphHistories"
-      :key="paragraphHistory"
-      :id="paragraphHistory"
-      v-dragging="{ item: paragraphHistory, list: paragraphHistories, group: 'paragraphHistory' }"
-      @need-new-paragraph="createParagraphHistory"
+      v-for="paragraphHistoryId in paragraphHistoryIds"
+      :key="paragraphHistoryId"
+      :id="paragraphHistoryId"
+      :mood="'sadness'"
+      v-dragging="{ item: paragraphHistoryId, list: paragraphHistoryIds, group: 'paragraphHistory' }"
+      @need-new-paragraph-history="createParagraphHistory"
       @delete-paragraph-history="deleteParagraphHistory"
-    />
+    ></paragraph-history>
   </div>
 </template>
 
@@ -21,33 +22,13 @@ import VueDND from 'awe-dnd'
 Vue.use(VueDND)
 
 export default {
-  name: 'paper',
   components: {
     ParagraphHistory
   },
   data () {
     return {
-      colors: [{
-        text: 'Aquamarine'
-      }, {
-        text: 'Hotpink'
-      }, {
-        text: 'Gold'
-      }, {
-        text: 'Crimson'
-      }, {
-        text: 'Blueviolet'
-      }, {
-        text: 'Lightblue'
-      }, {
-        text: 'Cornflowerblue'
-      }, {
-        text: 'Skyblue'
-      }, {
-        text: 'Burlywood'
-      }],
-      paragraphHistories: [],
-      nextParagraphHistoryId: 0
+      paragraphHistoryIds: [],
+      nextParagraphHistoryId: 1
     }
   },
   created () {
@@ -56,16 +37,16 @@ export default {
   methods: {
     createParagraphHistory (paragraphHistoryId) {
       if (typeof paragraphHistoryId === 'number') {
-        const targetIndex = this.paragraphHistories.indexOf(paragraphHistoryId)
-        this.paragraphHistories.splice(targetIndex + 1, 0, this.nextParagraphHistoryId++)
+        const targetIndex = this.paragraphHistoryIds.indexOf(paragraphHistoryId)
+        this.paragraphHistoryIds.splice(targetIndex + 1, 0, this.nextParagraphHistoryId++)
       } else {
-        this.paragraphHistories.push(this.nextParagraphHistoryId++)
+        this.paragraphHistoryIds.push(this.nextParagraphHistoryId++)
       }
     },
     deleteParagraphHistory (paragraphHistoryId) {
-      const targetIndex = this.paragraphHistories.indexOf(paragraphHistoryId)
+      const targetIndex = this.paragraphHistoryIds.indexOf(paragraphHistoryId)
       if (targetIndex !== -1) {
-        this.paragraphHistories.splice(targetIndex, 1)
+        this.paragraphHistoryIds.splice(targetIndex, 1)
       }
     }
   }

@@ -7,7 +7,7 @@
       @content-changed="onContentChanged"
       @delete-paragraph="emitDelete"
       @paragraph-mounted="$emit('paragraph-mounted')"
-    />
+    ></paragraph>
   </div>
 </template>
 
@@ -40,9 +40,8 @@ export default {
 <style scoped>
 .paragraph-card {
   border-radius: 10px;
-  border: 1px solid;
-  max-width:500px;
-  margin: 10px;
+  border: 1px solid #9cc2cb;
+  width: 100%;
   padding: 10px;
 }
 </style>
