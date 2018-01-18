@@ -3,19 +3,22 @@ import types from '../../mutation-types'
 const state = {
   paragraphHistories: [],
   nextParagraphHistoryId: 0,
-  nextParagraphId: 0
+  nextParagraphId: 0,
+  focusOnSummary: false
 }
 
 const getters = {
-  paragraphHistories: (state) => state.paragraphHistories,
-  lastParagraphHistoryMood: (state) => {
+  paragraphHistories: state => state.paragraphHistories,
+  findParagraphHistory: state => paragraphHistoryId => state.paragraphHistories.find(paragraphHistory => paragraphHistory.id === paragraphHistoryId),
+  lastParagraphHistoryMood: state => {
     const lastParagraphHistory = state.paragraphHistories[state.paragraphHistories.length - 1] || {}
     return lastParagraphHistory.mood || 'default'
   },
   paragraphs: state => paragraphHistoryId => {
     const paragraphHistory = state.paragraphHistories.find(paragraphHistory => paragraphHistory.id === paragraphHistoryId)
     return paragraphHistory.paragraphs
-  }
+  },
+  focusOnSummary: state => state.focusOnSummary
 }
 
 const mutations = {
@@ -25,7 +28,8 @@ const mutations = {
   [types.ADD_PARAGRAPH_HISTORY] (state) {
     state.paragraphHistories.push({
       id: state.nextParagraphHistoryId++,
-      mood: getters.lastParagraphHistoryMood(state)
+      mood: getters.lastParagraphHistoryMood(state),
+      summary: ''
     })
   },
   [types.ADD_PARAGRAPH_HISTORY_NEXT_BY] (state, {paragraphHistoryId, mood}) {
@@ -33,7 +37,8 @@ const mutations = {
       if (paragraphHistory.id === paragraphHistoryId) {
         paragraphHistories.splice(index + 1, 0, {
           id: state.nextParagraphHistoryId++,
-          mood
+          mood,
+          summary: ''
         })
       }
     })
@@ -63,6 +68,15 @@ const mutations = {
       }
     })
     paragraphHistory.paragraphs.splice(targetIndex, 1)
+  },
+  [types.UPDATE_SUMMARY] (state, {paragraphHistoryId, value}) {
+    state.paragraphHistories.find(paragraphHistory => paragraphHistory.id === paragraphHistoryId).summary = value
+  },
+  [types.FOCUS_ON_SUMMARY_TRUE] (state) {
+    state.focusOnSummary = true
+  },
+  [types.FOCUS_ON_SUMMARY_FALSE] (state) {
+    state.focusOnSummary = false
   }
 }
 

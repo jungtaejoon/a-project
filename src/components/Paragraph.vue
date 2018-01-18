@@ -26,7 +26,7 @@ export default {
   mounted () {
     const thisTextareaElement = this.$el.querySelector('textarea')
     autosize(thisTextareaElement)
-    thisTextareaElement.focus()
+    if (!this.$store.getters.focusOnSummary) thisTextareaElement.focus()
     this.$emit('paragraph-mounted')
   },
   data () {
@@ -50,9 +50,6 @@ export default {
         this.$emit('content-changed', this.content)
         this.content = this.confirmedContent
       }
-    },
-    newLine () {
-      this.content += '\n'
     }
   }
 }

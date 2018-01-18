@@ -8,9 +8,10 @@
       :id="paragraphHistory.id"
       :initMood="paragraphHistory.mood"
       v-dragging="{ item: paragraphHistory, list: paragraphHistories, group: 'paragraphHistory' }"
-      @need-new-paragraph-history="ADD_PARAGRAPH_HISTORY_NEXT_BY"
+      @need-new-paragraph-history="addParagraphHistory"
+      @need-new-paragraph-history-by-summary="addParagraphHistoryBySummary"
       @delete-paragraph-history="DELETE_PARAGRAPH_HISTORY"
-    ></paragraph-history>
+    />
   </div>
 </template>
 
@@ -40,7 +41,15 @@ export default {
       types.ADD_PARAGRAPH_HISTORY,
       types.ADD_PARAGRAPH_HISTORY_NEXT_BY,
       types.DELETE_PARAGRAPH_HISTORY
-    ])
+    ]),
+    addParagraphHistory (paragraphHistoryId) {
+      this.$store.commit(types.FOCUS_ON_SUMMARY_FALSE)
+      this[types.ADD_PARAGRAPH_HISTORY_NEXT_BY](paragraphHistoryId)
+    },
+    addParagraphHistoryBySummary (paragraphHistoryId) {
+      this.$store.commit(types.FOCUS_ON_SUMMARY_TRUE)
+      this[types.ADD_PARAGRAPH_HISTORY_NEXT_BY](paragraphHistoryId)
+    }
   }
 }
 </script>

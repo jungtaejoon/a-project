@@ -5,6 +5,12 @@
         <div class="card-header " :style="{'background-color': moodColor}">
           <h3 class="card-title text-light"><i class="ti-menu"></i> {{moodText}}</h3>
           <input type="text" v-model="mood">
+          <textarea
+            name="summary"
+            cols="30" rows="2"
+            v-model="summary"
+            @keydown.enter.prevent="$emit('need-new-paragraph-history-by-summary', {paragraphHistoryId: id, mood})"
+          ></textarea>
         </div>
         <div class="card-body text-dark" >
           <paragraph
@@ -29,6 +35,7 @@ import Paragraph from './Paragraph'
 import paragraphMoodMeta from './paragraph-mood-meta'
 import { mapMutations } from 'vuex'
 import types from '../mutation-types'
+import autosize from 'autosize'
 
 export default {
   props: {
@@ -46,6 +53,14 @@ export default {
     Paragraph
   },
   computed: {
+    summary: {
+      get () {
+        return this.$store.getters.findParagraphHistory(this.id).summary
+      },
+      set (value) {
+        this.$store.commit(types.UPDATE_SUMMARY, {paragraphHistoryId: this.id, value})
+      }
+    },
     moodText () {
       if (paragraphMoodMeta[this.mood]) return paragraphMoodMeta[this.mood].kor
     },
@@ -66,6 +81,9 @@ export default {
   },
   mounted () {
     this.paragraphs = this.$store.getters.paragraphs(this.id)
+    const thisTextareaElement = this.$el.querySelector('textarea')
+    autosize(thisTextareaElement)
+    if (this.$store.getters.focusOnSummary) thisTextareaElement.focus()
   },
   methods: {
     ...mapMutations([
