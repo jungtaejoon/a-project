@@ -1,15 +1,15 @@
 <template>
   <div class="color-list">
-    <button @click="createParagraphHistory">단락 추가</button>
+    <button @click="ADD_PARAGRAPH_HISTORY">단락 추가</button>
     <paragraph-history
       class="color-item"
-      v-for="paragraphHistoryId in paragraphHistoryIds"
-      :key="paragraphHistoryId"
-      :id="paragraphHistoryId"
-      :mood="'sadness'"
-      v-dragging="{ item: paragraphHistoryId, list: paragraphHistoryIds, group: 'paragraphHistory' }"
-      @need-new-paragraph-history="createParagraphHistory"
-      @delete-paragraph-history="deleteParagraphHistory"
+      v-for="paragraphHistory in paragraphHistories"
+      :key="paragraphHistory.id"
+      :id="paragraphHistory.id"
+      :mood="paragraphHistory.mood"
+      v-dragging="{ item: paragraphHistory, list: paragraphHistories, group: 'paragraphHistory' }"
+      @need-new-paragraph-history="ADD_PARAGRAPH_HISTORY_NEXT_BY"
+      @delete-paragraph-history="DELETE_PARAGRAPH_HISTORY"
     ></paragraph-history>
   </div>
 </template>
@@ -18,6 +18,8 @@
 import Vue from 'vue'
 import ParagraphHistory from './ParagraphHistory'
 import VueDND from 'awe-dnd'
+import { mapGetters, mapMutations } from 'vuex'
+import types from '../mutation-types'
 
 Vue.use(VueDND)
 
@@ -25,30 +27,20 @@ export default {
   components: {
     ParagraphHistory
   },
-  data () {
-    return {
-      paragraphHistoryIds: [],
-      nextParagraphHistoryId: 1
-    }
+  computed: {
+    ...mapGetters([
+      'paragraphHistories'
+    ])
   },
   created () {
-    this.createParagraphHistory()
+    this[types.ADD_PARAGRAPH_HISTORY]()
   },
   methods: {
-    createParagraphHistory (paragraphHistoryId) {
-      if (typeof paragraphHistoryId === 'number') {
-        const targetIndex = this.paragraphHistoryIds.indexOf(paragraphHistoryId)
-        this.paragraphHistoryIds.splice(targetIndex + 1, 0, this.nextParagraphHistoryId++)
-      } else {
-        this.paragraphHistoryIds.push(this.nextParagraphHistoryId++)
-      }
-    },
-    deleteParagraphHistory (paragraphHistoryId) {
-      const targetIndex = this.paragraphHistoryIds.indexOf(paragraphHistoryId)
-      if (targetIndex !== -1) {
-        this.paragraphHistoryIds.splice(targetIndex, 1)
-      }
-    }
+    ...mapMutations([
+      types.ADD_PARAGRAPH_HISTORY,
+      types.ADD_PARAGRAPH_HISTORY_NEXT_BY,
+      types.DELETE_PARAGRAPH_HISTORY
+    ])
   }
 }
 </script>

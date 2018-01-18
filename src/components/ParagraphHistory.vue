@@ -11,7 +11,7 @@
             :key="paragraph"
             :id="paragraph"
             :initContent="lastContent"
-            @need-new-paragraph="$emit('need-new-paragraph-history', id)"
+            @need-new-paragraph="$emit('need-new-paragraph-history', {id, mood})"
             @delete-paragraph="deleteParagraph"
             @content-changed="onContentChanged"
             @paragraph-mounted="lastContent = ''"
