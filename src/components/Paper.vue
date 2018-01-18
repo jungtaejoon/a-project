@@ -6,7 +6,7 @@
       v-for="paragraphHistory in paragraphHistories"
       :key="paragraphHistory.id"
       :id="paragraphHistory.id"
-      :mood="paragraphHistory.mood"
+      :initMood="paragraphHistory.mood"
       v-dragging="{ item: paragraphHistory, list: paragraphHistories, group: 'paragraphHistory' }"
       @need-new-paragraph-history="ADD_PARAGRAPH_HISTORY_NEXT_BY"
       @delete-paragraph-history="DELETE_PARAGRAPH_HISTORY"

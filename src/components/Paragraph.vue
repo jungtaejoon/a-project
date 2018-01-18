@@ -4,9 +4,8 @@
       name=""
       :id="ID_PREFIX + id"
       v-model="content"
-      @keydown.prevent.enter="createParagraph"
+      @keydown.enter.exact.prevent="createParagraph"
       @keydown.delete="onContentEmpty"
-      @keydown.prevent.enter.shift.exact="newLine"
     ></textarea>
   </div>
 </template>
@@ -50,7 +49,6 @@ export default {
       } else if (this.confirmedContent !== this.content) {
         this.$emit('content-changed', this.content)
         this.content = this.confirmedContent
-        this.isLast = false
       }
     },
     newLine () {

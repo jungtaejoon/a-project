@@ -2,7 +2,6 @@ import types from '../../mutation-types'
 
 const state = {
   paragraphHistories: [],
-  paragraphsTable: {},
   nextParagraphHistoryId: 0,
   nextParagraphId: 0
 }
@@ -40,9 +39,11 @@ const mutations = {
     })
   },
   [types.DELETE_PARAGRAPH_HISTORY] (state, paragraphHistoryId) {
-    state.paragraphHistories.find((paragraphHistory, index, paragraphHistories) => {
-      if (paragraphHistory.id === paragraphHistoryId) paragraphHistories.splice(index, 1)
+    let targetIndex
+    state.paragraphHistories.find((paragraphHistory, index) => {
+      if (paragraphHistory.id === paragraphHistoryId) targetIndex = index
     })
+    state.paragraphHistories.splice(targetIndex, 1)
   },
   [types.ADD_EMPTY_PARAGRAPH] (state, paragraphHistoryId) {
     const paragraphHistory = state.paragraphHistories.find(paragraphHistory => paragraphHistory.id === paragraphHistoryId)
@@ -55,12 +56,13 @@ const mutations = {
   },
   [types.DELETE_PARAGRAPH] (state, {paragraphHistoryId, paragraphId}) {
     const paragraphHistory = state.paragraphHistories.find(paragraphHistory => paragraphHistory.id === paragraphHistoryId)
-    paragraphHistory.paragraphs.find((paragraph, index, paragraphs) => {
+    let targetIndex
+    paragraphHistory.paragraphs.find((paragraph, index) => {
       if (paragraph.id === paragraphId) {
-        paragraphs.splice(index, 1)
-        console.log(paragraphs)
+        targetIndex = index
       }
     })
+    paragraphHistory.paragraphs.splice(targetIndex, 1)
   }
 }
 

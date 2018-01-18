@@ -4,6 +4,7 @@
       <div class="color-box card m-2">
         <div class="card-header " :style="{'background-color': moodColor}">
           <h3 class="card-title text-light"><i class="ti-menu"></i> {{moodText}}</h3>
+          <input type="text" v-model="mood">
         </div>
         <div class="card-body text-dark" >
           <paragraph
@@ -15,7 +16,7 @@
             @delete-paragraph="deleteParagraph"
             @content-changed="onContentChanged"
             @paragraph-mounted="lastContent = ''"
-          ></paragraph>
+          />
         </div>
       </div>
     </div>
@@ -35,7 +36,7 @@ export default {
       type: Number,
       required: true
     },
-    mood: {
+    initMood: {
       type: String,
       default: 'default',
       required: false
@@ -45,24 +46,26 @@ export default {
     Paragraph
   },
   computed: {
-    paragraphs () {
-      return this.$store.getters.paragraphs(this.id)
-    },
     moodText () {
-      return paragraphMoodMeta[this.mood].kor
+      if (paragraphMoodMeta[this.mood]) return paragraphMoodMeta[this.mood].kor
     },
     moodColor () {
-      return paragraphMoodMeta[this.mood].color
+      if (paragraphMoodMeta[this.mood]) return paragraphMoodMeta[this.mood].color
     }
   },
   data () {
     return {
+      paragraphs: [],
       ID_PREFIX: 'paragraphHistory-',
+      mood: this.initMood,
       lastContent: ''
     }
   },
   created () {
     this[types.ADD_EMPTY_PARAGRAPH](this.id)
+  },
+  mounted () {
+    this.paragraphs = this.$store.getters.paragraphs(this.id)
   },
   methods: {
     ...mapMutations([
@@ -71,7 +74,6 @@ export default {
       types.DELETE_PARAGRAPH
     ]),
     deleteParagraph (paragraphId) {
-      console.log(paragraphId)
       this[types.DELETE_PARAGRAPH]({paragraphHistoryId: this.id, paragraphId})
       if (this.paragraphs.length === 0) {
         this.$emit('delete-paragraph-history', this.id)
