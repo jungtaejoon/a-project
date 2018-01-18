@@ -7,11 +7,11 @@
         </div>
         <div class="card-body text-dark" >
           <paragraph
-            v-for="paragraph in paragraphIds"
-            :key="paragraph"
-            :id="paragraph"
+            v-for="paragraph in paragraphs"
+            :key="paragraph.id"
+            :id="paragraph.id"
             :initContent="lastContent"
-            @need-new-paragraph="$emit('need-new-paragraph-history', {id, mood})"
+            @need-new-paragraph="$emit('need-new-paragraph-history', {paragraphHistoryId: id, mood})"
             @delete-paragraph="deleteParagraph"
             @content-changed="onContentChanged"
             @paragraph-mounted="lastContent = ''"
@@ -26,9 +26,9 @@
 <script>
 import Paragraph from './Paragraph'
 import paragraphMoodMeta from './paragraph-mood-meta'
-import { mapGetters } from 'vuex'
+import { mapMutations } from 'vuex'
+import types from '../mutation-types'
 
-let nextParagraphId = 1
 export default {
   props: {
     id: {
@@ -45,9 +45,9 @@ export default {
     Paragraph
   },
   computed: {
-    ...mapGetters([
-      'paragraphs'
-    ]),
+    paragraphs () {
+      return this.$store.getters.paragraphs(this.id)
+    },
     moodText () {
       return paragraphMoodMeta[this.mood].kor
     },
@@ -58,29 +58,28 @@ export default {
   data () {
     return {
       ID_PREFIX: 'paragraphHistory-',
-      paragraphIds: [],
       lastContent: ''
     }
   },
   created () {
-    this.createParagraph()
+    this[types.ADD_EMPTY_PARAGRAPH](this.id)
   },
   methods: {
-    createParagraph () {
-      this.paragraphIds.push(nextParagraphId++)
-    },
+    ...mapMutations([
+      types.ADD_EMPTY_PARAGRAPH,
+      types.ADD_PARAGRAPH_WITH_CONFIRMED_CONTENT,
+      types.DELETE_PARAGRAPH
+    ]),
     deleteParagraph (paragraphId) {
-      const targetIndex = this.paragraphIds.indexOf(paragraphId)
-      if (targetIndex !== -1) {
-        this.paragraphIds.splice(targetIndex, 1)
-      }
-      if (!this.paragraphIds.length) {
+      console.log(paragraphId)
+      this[types.DELETE_PARAGRAPH]({paragraphHistoryId: this.id, paragraphId})
+      if (this.paragraphs.length === 0) {
         this.$emit('delete-paragraph-history', this.id)
       }
     },
-    onContentChanged (newContent) {
-      this.lastContent = newContent
-      this.createParagraph()
+    onContentChanged (confirmedContent) {
+      this.lastContent = confirmedContent
+      this[types.ADD_PARAGRAPH_WITH_CONFIRMED_CONTENT]({paragraphHistoryId: this.id, confirmedContent})
     }
   }
 }
