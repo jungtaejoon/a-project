@@ -6,7 +6,8 @@ Vue.use(Vuex)
 
 const state = {
   paragraphHistories: [],
-  nextParagraphHistoryId: 0
+  nextParagraphHistoryId: 0,
+  nextParagraphId: 0
 }
 
 const getters = {
@@ -19,16 +20,30 @@ const getters = {
 }
 
 const mutations = {
-  [types.SET_MOOD] (state, {paragraphHistoryId, mood}) {
-    state.paragraphHistories.find(paragraphHistory => paragraphHistory.id === paragraphHistoryId).mood = mood
+  [types.SET_MOOD] (state, {id, mood}) {
+    state.paragraphHistories.find(paragraphHistory => paragraphHistory.id === id).mood = mood
   },
-  [types.ADD_PARAGRAPH_HISTORY]: state => state.paragraphHistories.push({id: state.nextParagraphHistoryId++, mood: getters.lastParagraphHistoryMood(state)}),
-  [types.ADD_PARAGRAPH_HISTORY_NEXT_BY]: (state, {id, mood}) => state.paragraphHistories.find((paragraphHistory, index, paragraphHistories) => {
-    if (paragraphHistory.id === id) paragraphHistories.splice(index + 1, 0, {id: state.nextParagraphHistoryId++, mood})
-  }),
-  [types.DELETE_PARAGRAPH_HISTORY]: (state, id) => state.paragraphHistories.find((paragraphHistory, index, paragraphHistories) => {
-    if (paragraphHistory.id === id) paragraphHistories.splice(index, 1)
-  })
+  [types.ADD_PARAGRAPH_HISTORY] (state) {
+    state.paragraphHistories.push({
+      id: state.nextParagraphHistoryId++,
+      mood: getters.lastParagraphHistoryMood(state)
+    })
+  },
+  [types.ADD_PARAGRAPH_HISTORY_NEXT_BY] (state, {id, mood}) {
+    state.paragraphHistories.find((paragraphHistory, index, paragraphHistories) => {
+      if (paragraphHistory.id === id) {
+        paragraphHistories.splice(index + 1, 0, {
+          id: state.nextParagraphHistoryId++,
+          mood
+        })
+      }
+    })
+  },
+  [types.DELETE_PARAGRAPH_HISTORY] (state, id) {
+    state.paragraphHistories.find((paragraphHistory, index, paragraphHistories) => {
+      if (paragraphHistory.id === id) paragraphHistories.splice(index, 1)
+    })
+  }
 }
 
 export default new Vuex.Store({

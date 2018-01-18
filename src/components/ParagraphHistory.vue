@@ -6,7 +6,7 @@
           <h3 class="card-title text-light"><i class="ti-menu"></i> {{moodText}}</h3>
         </div>
         <div class="card-body text-dark" >
-          <paragraph-container
+          <paragraph
             v-for="paragraph in paragraphIds"
             :key="paragraph"
             :id="paragraph"
@@ -15,7 +15,7 @@
             @delete-paragraph="deleteParagraph"
             @content-changed="onContentChanged"
             @paragraph-mounted="lastContent = ''"
-          ></paragraph-container>
+          ></paragraph>
         </div>
       </div>
     </div>
@@ -24,8 +24,9 @@
 </template>
 
 <script>
-import ParagraphContainer from './ParagraphContainer'
+import Paragraph from './Paragraph'
 import paragraphMoodMeta from './paragraph-mood-meta'
+import { mapGetters } from 'vuex'
 
 let nextParagraphId = 1
 export default {
@@ -41,9 +42,12 @@ export default {
     }
   },
   components: {
-    ParagraphContainer
+    Paragraph
   },
   computed: {
+    ...mapGetters([
+      'paragraphs'
+    ]),
     moodText () {
       return paragraphMoodMeta[this.mood].kor
     },

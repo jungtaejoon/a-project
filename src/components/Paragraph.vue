@@ -1,12 +1,14 @@
 <template>
-  <textarea
-    name=""
-    :id="ID_PREFIX + id"
-    v-model="content"
-    @keydown.prevent.enter="createParagraph"
-    @keydown.delete="onContentEmpty"
-    @keydown.prevent.enter.shift.exact="newLine"
-  ></textarea>
+  <div class="paragraph-card">
+   <textarea
+      name=""
+      :id="ID_PREFIX + id"
+      v-model="content"
+      @keydown.prevent.enter="createParagraph"
+      @keydown.delete="onContentEmpty"
+      @keydown.prevent.enter.shift.exact="newLine"
+    ></textarea>
+  </div>
 </template>
 
 <script>
@@ -23,8 +25,9 @@ export default {
     }
   },
   mounted () {
-    autosize(this.$el)
-    this.$el.focus()
+    const thisTextareaElement = this.$el.querySelector('textarea')
+    autosize(thisTextareaElement)
+    thisTextareaElement.focus()
     this.$emit('paragraph-mounted')
   },
   data () {
@@ -66,5 +69,11 @@ textarea {
 }
 textarea:focus {
   outline: none !important;
+}
+.paragraph-card {
+  border-radius: 10px;
+  border: 1px solid #9cc2cb;
+  width: 100%;
+  padding: 10px;
 }
 </style>
