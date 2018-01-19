@@ -32,6 +32,7 @@
             @delete-paragraph="deleteParagraph"
             @content-changed="onContentChanged"
             @paragraph-mounted="lastContent = ''"
+            @set-focus-target="value => $emit('set-focus-target', value)"
           />
         </div>
       </div>
@@ -96,7 +97,6 @@ export default {
     return {
       ...idPrefixMeta,
       paragraphs: [],
-      ID_PREFIX: 'paragraphHistory-',
       lastContent: ''
     }
   },
@@ -107,7 +107,9 @@ export default {
     this.paragraphs = this.$store.getters.paragraphs(this.id)
     const thisTextareaElement = this.$el.querySelector('textarea')
     autosize(thisTextareaElement)
-    if (this.$store.getters.focusOnSummary) thisTextareaElement.focus()
+    if (this.$store.getters.focusOnSummary) {
+      this.$emit('set-focus-target', thisTextareaElement)
+    }
   },
   methods: {
     ...mapMutations([
@@ -116,9 +118,10 @@ export default {
       types.DELETE_PARAGRAPH
     ]),
     deleteParagraph (paragraphId) {
-      this[types.DELETE_PARAGRAPH]({paragraphHistoryId: this.id, paragraphId})
-      if (this.paragraphs.length === 0) {
+      if (this.paragraphs.length === 1) {
         this.$emit('delete-paragraph-history', this.id)
+      } else {
+        this[types.DELETE_PARAGRAPH]({paragraphHistoryId: this.id, paragraphId})
       }
     },
     onContentChanged (confirmedContent) {

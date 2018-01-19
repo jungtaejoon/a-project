@@ -2,7 +2,7 @@
   <div class="paragraph-card">
    <textarea
       name=""
-      :id="ID_PREFIX + id"
+      :id="PARAGRAPH_ID_PREFIX + id"
       v-model="content"
       @mouseover="editingIsTrue"
       @mouseleave="editingIsFalse"
@@ -15,6 +15,7 @@
 <script>
 import autosize from 'autosize'
 import types from '../mutation-types'
+import idPrefixMeta from './id-prefix-meta'
 
 export default {
   name: 'paragraph',
@@ -29,12 +30,12 @@ export default {
   mounted () {
     const thisTextareaElement = this.$el.querySelector('textarea')
     autosize(thisTextareaElement)
-    if (!this.$store.getters.focusOnSummary) thisTextareaElement.focus()
+    if (!this.$store.getters.focusOnSummary) this.$emit('set-focus-target', thisTextareaElement)
     this.$emit('paragraph-mounted')
   },
   data () {
     return {
-      ID_PREFIX: 'paragraph-',
+      ...idPrefixMeta,
       confirmedContent: this.initContent,
       content: this.initContent
     }
