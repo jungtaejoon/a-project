@@ -9,6 +9,11 @@
 
 export default {}
 </script>
+<style src="./assets/css/bootstrap.min.css"></style>
+<style src="./assets/fonts/font-awesome/css/font-awesome.min.css"></style>
+<style src="./assets/css/plugins/iCheck/custom.css"></style>
+<style src="./assets/css/animate.css"></style>
+<style src="./assets/css/style.css"></style>
 <style src="./assets/css/app.css"></style>
 <style src="./assets/css/custom.css"></style>
 <style>

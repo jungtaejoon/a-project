@@ -1,16 +1,26 @@
 <template>
-  <div :id="ID_PREFIX + id" class="paragraph-history">
+  <div :id="PARAGRAPH_HISTORY_ID_PREFIX + id" class="paragraph-history">
     <div class="color-show">
       <div class="color-box card m-2">
-        <div class="card-header " :style="{'background-color': moodColor}">
-          <h3 class="card-title text-light"><i class="ti-menu"></i> {{moodText}}</h3>
-          <input type="text" v-model="mood">
-          <textarea
-            name="summary"
-            cols="30" rows="2"
-            v-model="summary"
-            @keydown.enter.prevent="$emit('need-new-paragraph-history-by-summary', {paragraphHistoryId: id, mood})"
-          ></textarea>
+        <div v-show="showMetaController">
+          <div class="card-header " :style="{'background-color': moodColor}">
+            <button @click="$emit('delete-paragraph-history', id)">X</button>
+            <h3 class="card-title text-light"><i class="ti-menu"></i> {{moodText}}</h3>
+            <input type="text"
+             v-model="mood"
+             @mouseover="editingIsTrue"
+             @mouseleave="editingIsFalse"
+            />
+            <textarea
+              dnd-nodrag
+              name="summary"
+              cols="30" rows="2"
+              v-model="summary"
+              @mouseover="editingIsTrue"
+              @mouseleave="editingIsFalse"
+              @keydown.enter.prevent="$emit('need-new-paragraph-history-by-summary', {paragraphHistoryId: id, mood})"
+            ></textarea>
+          </div>
         </div>
         <div class="card-body text-dark" >
           <paragraph
@@ -35,6 +45,7 @@ import Paragraph from './Paragraph'
 import paragraphMoodMeta from './paragraph-mood-meta'
 import { mapMutations } from 'vuex'
 import types from '../mutation-types'
+import idPrefixMeta from './id-prefix-meta'
 import autosize from 'autosize'
 
 export default {
@@ -47,6 +58,11 @@ export default {
       type: String,
       default: 'default',
       required: false
+    },
+    showMetaController: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   components: {
@@ -61,6 +77,14 @@ export default {
         this.$store.commit(types.UPDATE_SUMMARY, {paragraphHistoryId: this.id, value})
       }
     },
+    mood: {
+      get () {
+        return this.$store.getters.findParagraphHistory(this.id).mood
+      },
+      set (value) {
+        this.$store.commit(types.UPDATE_MOOD, {paragraphHistoryId: this.id, value})
+      }
+    },
     moodText () {
       if (paragraphMoodMeta[this.mood]) return paragraphMoodMeta[this.mood].kor
     },
@@ -70,9 +94,9 @@ export default {
   },
   data () {
     return {
+      ...idPrefixMeta,
       paragraphs: [],
       ID_PREFIX: 'paragraphHistory-',
-      mood: this.initMood,
       lastContent: ''
     }
   },
@@ -100,6 +124,12 @@ export default {
     onContentChanged (confirmedContent) {
       this.lastContent = confirmedContent
       this[types.ADD_PARAGRAPH_WITH_CONFIRMED_CONTENT]({paragraphHistoryId: this.id, confirmedContent})
+    },
+    editingIsTrue () {
+      this.$store.commit(types.EDITING_IS_TRUE)
+    },
+    editingIsFalse () {
+      this.$store.commit(types.EDITING_IS_FALSE)
     }
   }
 }

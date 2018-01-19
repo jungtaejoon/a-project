@@ -1,40 +1,57 @@
 <template>
   <div class="color-list">
+    <summary-mood-timeline></summary-mood-timeline>
     <button @click="ADD_PARAGRAPH_HISTORY">단락 추가</button>
-    <paragraph-history
-      class="color-item"
-      v-for="paragraphHistory in paragraphHistories"
-      :key="paragraphHistory.id"
-      :id="paragraphHistory.id"
-      :initMood="paragraphHistory.mood"
-      v-dragging="{ item: paragraphHistory, list: paragraphHistories, group: 'paragraphHistory' }"
-      @need-new-paragraph-history="addParagraphHistory"
-      @need-new-paragraph-history-by-summary="addParagraphHistoryBySummary"
-      @delete-paragraph-history="DELETE_PARAGRAPH_HISTORY"
-    />
+    <button @click="toggleMetaController">단락 컨트롤러 토글</button>
+    <draggable v-model="paragraphHistories" :options="{'disabled':edit}">
+      <transition-group>
+        <paragraph-history
+          class="color-item"
+          v-for="paragraphHistory in paragraphHistories"
+          :key="paragraphHistory.id"
+          :id="paragraphHistory.id"
+          :initMood="paragraphHistory.mood"
+          :showMetaController="showMetaController"
+          @need-new-paragraph-history="addParagraphHistory"
+          @need-new-paragraph-history-by-summary="addParagraphHistoryBySummary"
+          @delete-paragraph-history="DELETE_PARAGRAPH_HISTORY"
+        />
+      </transition-group>
+    </draggable>
   </div>
 </template>
 
 <script>
-import Vue from 'vue'
 import ParagraphHistory from './ParagraphHistory'
-import VueDND from 'awe-dnd'
+import SummaryMoodTimeline from './SummaryMoodTimeline'
 import { mapGetters, mapMutations } from 'vuex'
 import types from '../mutation-types'
-
-Vue.use(VueDND)
+import draggable from 'vuedraggable'
 
 export default {
   components: {
-    ParagraphHistory
+    ParagraphHistory, SummaryMoodTimeline, draggable
   },
   computed: {
     ...mapGetters([
-      'paragraphHistories'
-    ])
+      'edit'
+    ]),
+    paragraphHistories: {
+      get () {
+        return this.$store.getters.paragraphHistories
+      },
+      set (value) {
+        this.$store.commit(types.UPDATE_PARAGRAPH_HISTORIES, value)
+      }
+    }
   },
   created () {
     this[types.ADD_PARAGRAPH_HISTORY]()
+  },
+  data () {
+    return {
+      showMetaController: false
+    }
   },
   methods: {
     ...mapMutations([
@@ -49,6 +66,9 @@ export default {
     addParagraphHistoryBySummary (paragraphHistoryId) {
       this.$store.commit(types.FOCUS_ON_SUMMARY_TRUE)
       this[types.ADD_PARAGRAPH_HISTORY_NEXT_BY](paragraphHistoryId)
+    },
+    toggleMetaController () {
+      this.showMetaController = !this.showMetaController
     }
   }
 }

@@ -4,6 +4,8 @@
       name=""
       :id="ID_PREFIX + id"
       v-model="content"
+      @mouseover="editingIsTrue"
+      @mouseleave="editingIsFalse"
       @keydown.enter.exact.prevent="createParagraph"
       @keydown.delete="onContentEmpty"
     ></textarea>
@@ -12,6 +14,7 @@
 
 <script>
 import autosize from 'autosize'
+import types from '../mutation-types'
 
 export default {
   name: 'paragraph',
@@ -50,6 +53,12 @@ export default {
         this.$emit('content-changed', this.content)
         this.content = this.confirmedContent
       }
+    },
+    editingIsTrue () {
+      this.$store.commit(types.EDITING_IS_TRUE)
+    },
+    editingIsFalse () {
+      this.$store.commit(types.EDITING_IS_FALSE)
     }
   }
 }
