@@ -30,7 +30,7 @@ export default {
   mounted () {
     const thisTextareaElement = this.$el.querySelector('textarea')
     autosize(thisTextareaElement)
-    if (!this.$store.getters.focusOnSummary) this.$emit('set-focus-target', thisTextareaElement)
+    if (!this.$store.getters.focusOnSummary) setTimeout(() => thisTextareaElement.focus(), 100)
     this.$emit('paragraph-mounted')
   },
   data () {

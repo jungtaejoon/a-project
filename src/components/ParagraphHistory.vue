@@ -107,9 +107,7 @@ export default {
     this.paragraphs = this.$store.getters.paragraphs(this.id)
     const thisTextareaElement = this.$el.querySelector('textarea')
     autosize(thisTextareaElement)
-    if (this.$store.getters.focusOnSummary) {
-      this.$emit('set-focus-target', thisTextareaElement)
-    }
+    if (this.$store.getters.focusOnSummary) setTimeout(() => thisTextareaElement.focus(), 100)
   },
   methods: {
     ...mapMutations([

@@ -3,7 +3,7 @@
     <summary-mood-timeline></summary-mood-timeline>
     <button @click="addParagraphHistory">단락 추가</button>
     <button @click="toggleMetaController">단락 컨트롤러 토글</button>
-    <draggable v-model="paragraphHistories" :options="{disabled:edit, ghostClass: 'ghost'}" @change="setFocus">
+    <draggable v-model="paragraphHistories" :options="{disabled:edit, ghostClass: 'ghost'}">
       <transition-group name="paragraph-history-list">
         <paragraph-history
           v-for="paragraphHistory in paragraphHistories"
@@ -54,10 +54,6 @@ export default {
       focusTargetElement: null
     }
   },
-  updated () {
-    this.$emit('test')
-  },
-
   methods: {
     ...mapMutations([
       types.ADD_PARAGRAPH_HISTORY,
@@ -176,7 +172,7 @@ body{font-family:Helvetica,sans-serif}
   background: #C8EBFB;
 }
 .paragraph-history {
-  transition: all 1s;
+  transition: all .5s;
 }
 .paragraph-history-list-enter, .paragraph-history-list-leave-active {
   display: none;
