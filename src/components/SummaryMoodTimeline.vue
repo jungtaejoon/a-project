@@ -20,14 +20,14 @@
 </template>
 
 <script>
-require('imports-loader?this=>window!../vendors/wow/dist/wow.min.js')
 import {mapGetters} from 'vuex'
 import paragraphMoodMeta from './paragraph-mood-meta'
 import idPrefixMeta from './id-prefix-meta'
-import animate_css from 'animate.css/animate.min.css'
 import autosize from 'autosize'
 import types from '../mutation-types'
 import $ from 'jquery'
+// eslint-disable-next-line
+require('imports-loader?this=>window!../vendors/wow/dist/wow.min.js')
 
 export default {
   props: [
@@ -78,6 +78,7 @@ export default {
     autosize(thisTitleTextarea)
     autosize(thisSummaryTextarea)
     $(function () {
+      // eslint-disable-next-line
       new WOW().init()
     })
   },

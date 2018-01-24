@@ -39,6 +39,8 @@
 </template>
 <script>
 import SummaryMoodTimeline from '../SummaryMoodTimeline'
+import types from '../../mutation-types'
+
 export default {
   components: {
     SummaryMoodTimeline

@@ -20,6 +20,7 @@
                   @mouseleave="editingIsFalse"
                   @keydown.enter="editingInput = ''"
                   @blur="editingInput = ''"
+                  @focus="$event.target.select()"
                 />
                 <span
                   v-show="editingInput !== 'mood-input'"
@@ -38,6 +39,7 @@
                   @keydown.enter.prevent="$emit('need-new-paragraph-history-by-summary', {paragraphHistoryId: id, mood})"
                   @keydown.enter="editingInput = ''"
                   @blur="editingInput = ''"
+                  @focus="$event.target.select()"
                 />
                 <span
                   v-show="editingInput !== 'summary-input'"
@@ -72,7 +74,6 @@ import paragraphMoodMeta from './paragraph-mood-meta'
 import { mapMutations } from 'vuex'
 import types from '../mutation-types'
 import idPrefixMeta from './id-prefix-meta'
-import autosize from 'autosize'
 
 export default {
   props: {
@@ -133,9 +134,12 @@ export default {
   },
   mounted () {
     this.paragraphs = this.$store.getters.paragraphs(this.id)
-    const thisTextareaElement = this.$el.querySelector('textarea')
-    autosize(thisTextareaElement)
-    if (this.$store.getters.focusOnSummary) setTimeout(() => thisTextareaElement.focus(), 100)
+    if (this.$store.getters.focusOnSummary) {
+      setTimeout(() => {
+        this.editingInput = 'summary-input'
+        this.$el.querySelector('.summary-input').focus()
+      }, 100)
+    }
   },
   methods: {
     ...mapMutations([
@@ -159,15 +163,6 @@ export default {
     },
     editingIsFalse () {
       this.$store.commit(types.EDITING_IS_FALSE)
-    },
-    summaryFocus () {
-      if (this.isSummaryEditing) {
-        return this.$el.querySelector('summary-input').focus()
-      }
-    },
-    moodFocus () {
-      this.isMoodEditing = true
-      this.$el.querySelector('mood-input').focus()
     }
   },
   updated () {
