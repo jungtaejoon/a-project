@@ -42,7 +42,7 @@
                 <span
                   v-show="editingInput !== 'summary-input'"
                   @click="editingInput = 'summary-input'"
-                >{{summary}}</span>
+                >{{summary || 'summary'}}</span>
               </div>
             </div>
           </div>
@@ -171,7 +171,9 @@ export default {
     }
   },
   updated () {
-    this.$el.querySelector('.' + this.editingInput).focus()
+    if (this.editingInput) {
+      this.$el.querySelector('.' + this.editingInput).focus()
+    }
   }
 }
 </script>
