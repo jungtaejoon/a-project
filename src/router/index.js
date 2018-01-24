@@ -7,10 +7,22 @@ Vue.use(Router)
 
 export default new Router({
   mode: 'history',
+  linkActiveClass: 'active',
   routes: [
     {
       path: '/',
-      component: Paper
+      component: resolve => require(['../default.vue'], resolve),
+      children: [{
+        path: '',
+        component: resolve => require(['../components/Paper.vue'], resolve),
+        meta: {
+          title: 'Dashboard',
+          breadcrumb: [{
+            text: '<i class="ti-home"></i> Dashboard 1',
+            href: '/'
+          }]
+        }
+      }]
     },
     {
       path: '/paper',

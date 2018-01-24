@@ -4,22 +4,42 @@
       <div class="color-box card m-2">
         <div v-show="showMetaController">
           <div class="card-header " :style="{'background-color': moodColor}">
-            <button @click="$emit('delete-paragraph-history', id)">X</button>
+            <span class="float-right fnt_size txt_font">
+                                    <i class="fa fa-fw ti-close removecard" @click="$emit('delete-paragraph-history', id)"></i>
+                                </span>
             <h3 class="card-title text-light"><i class="ti-menu"></i> {{moodText}}</h3>
-            <input type="text"
-             v-model="mood"
-             @mouseover="editingIsTrue"
-             @mouseleave="editingIsFalse"
-            />
-            <textarea
-              dnd-nodrag
-              name="summary"
-              cols="30" rows="2"
-              v-model="summary"
-              @mouseover="editingIsTrue"
-              @mouseleave="editingIsFalse"
-              @keydown.enter.prevent="$emit('need-new-paragraph-history-by-summary', {paragraphHistoryId: id, mood})"
-            ></textarea>
+            <div class="row">
+              <div class="col-4">
+                <input
+                  v-show="isMoodEditing"
+                  class="form-control"
+                  type="text"
+                  placeholder="mood"
+                  v-model="mood"
+                  @mouseover="editingIsTrue"
+                  @mouseleave="editingIsFalse"
+                  @keydown.enter="isMoodEditing = false"
+                  @blur="isMoodEditing = false"
+                />
+                <span
+                  v-show="!isMoodEditing"
+                  @click="isMoodEditing = true"
+                >{{mood}}</span>
+              </div>
+              <div class="col-8">
+                <input
+                  v-show="isSummaryEditing"
+                  class="form-control"
+                  placeholder="summary"
+                  name="summary"
+                  v-model="summary"
+                  @mouseover="editingIsTrue"
+                  @mouseleave="editingIsFalse"
+                  @keydown.enter.prevent="$emit('need-new-paragraph-history-by-summary', {paragraphHistoryId: id, mood})"
+                />
+                <span v-show="!isSummaryEditing">{{summary}}</span>
+              </div>
+            </div>
           </div>
         </div>
         <div class="card-body text-dark" >
@@ -97,7 +117,9 @@ export default {
     return {
       ...idPrefixMeta,
       paragraphs: [],
-      lastContent: ''
+      lastContent: '',
+      isMoodEditing: false,
+      isSummaryEditing: false
     }
   },
   created () {
@@ -139,5 +161,11 @@ export default {
 <style scoped>
 .paragraph-history {
   width: 500px;
+}
+div.card-body.text-dark {
+  padding: 6px;
+}
+i.fa.fa-fw.ti-close.removecard {
+  cursor: pointer;
 }
 </style>

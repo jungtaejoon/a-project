@@ -11,6 +11,8 @@ const state = {
 const getters = {
   paragraphHistories: state => state.paragraphHistories,
   findParagraphHistory: state => paragraphHistoryId => state.paragraphHistories.find(paragraphHistory => paragraphHistory.id === paragraphHistoryId),
+  mood: state => paragraphHistoryId => state.paragraphHistories.find(paragraphHistory => paragraphHistory.id === paragraphHistoryId).mood,
+  summary: state => paragraphHistoryId => state.paragraphHistories.find(paragraphHistory => paragraphHistory.id === paragraphHistoryId).summary,
   lastParagraphHistoryMood: state => {
     const lastParagraphHistory = state.paragraphHistories[state.paragraphHistories.length - 1] || {}
     return lastParagraphHistory.mood || 'default'

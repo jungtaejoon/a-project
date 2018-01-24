@@ -79,6 +79,6 @@ textarea:focus {
   border-radius: 10px;
   border: 1px solid #9cc2cb;
   width: 100%;
-  padding: 10px;
+  padding: 5px;
 }
 </style>
