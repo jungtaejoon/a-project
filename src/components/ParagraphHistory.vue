@@ -11,33 +11,38 @@
             <div class="row">
               <div class="col-4">
                 <input
-                  v-show="isMoodEditing"
-                  class="form-control"
+                  v-show="editingInput === 'mood-input'"
+                  class="form-control mood-input"
                   type="text"
                   placeholder="mood"
                   v-model="mood"
                   @mouseover="editingIsTrue"
                   @mouseleave="editingIsFalse"
-                  @keydown.enter="isMoodEditing = false"
-                  @blur="isMoodEditing = false"
+                  @keydown.enter="editingInput = ''"
+                  @blur="editingInput = ''"
                 />
                 <span
-                  v-show="!isMoodEditing"
-                  @click="isMoodEditing = true"
+                  v-show="editingInput !== 'mood-input'"
+                  @click="editingInput = 'mood-input'"
                 >{{mood}}</span>
               </div>
               <div class="col-8">
                 <input
-                  v-show="isSummaryEditing"
-                  class="form-control"
+                  v-show="editingInput === 'summary-input'"
+                  class="form-control summary-input"
                   placeholder="summary"
                   name="summary"
                   v-model="summary"
                   @mouseover="editingIsTrue"
                   @mouseleave="editingIsFalse"
                   @keydown.enter.prevent="$emit('need-new-paragraph-history-by-summary', {paragraphHistoryId: id, mood})"
+                  @keydown.enter="editingInput = ''"
+                  @blur="editingInput = ''"
                 />
-                <span v-show="!isSummaryEditing">{{summary}}</span>
+                <span
+                  v-show="editingInput !== 'summary-input'"
+                  @click="editingInput = 'summary-input'"
+                >{{summary}}</span>
               </div>
             </div>
           </div>
@@ -118,6 +123,7 @@ export default {
       ...idPrefixMeta,
       paragraphs: [],
       lastContent: '',
+      editingInput: '',
       isMoodEditing: false,
       isSummaryEditing: false
     }
@@ -153,7 +159,19 @@ export default {
     },
     editingIsFalse () {
       this.$store.commit(types.EDITING_IS_FALSE)
+    },
+    summaryFocus () {
+      if (this.isSummaryEditing) {
+        return this.$el.querySelector('summary-input').focus()
+      }
+    },
+    moodFocus () {
+      this.isMoodEditing = true
+      this.$el.querySelector('mood-input').focus()
     }
+  },
+  updated () {
+    this.$el.querySelector('.' + this.editingInput).focus()
   }
 }
 </script>
