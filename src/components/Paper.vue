@@ -1,6 +1,5 @@
 <template>
   <div class="color-list">
-    <summary-mood-timeline></summary-mood-timeline>
     <button @click="addParagraphHistory">단락 추가</button>
     <button @click="toggleMetaController">단락 컨트롤러 토글</button>
     <draggable v-model="paragraphHistories" :options="{disabled:edit, ghostClass: 'ghost'}">
@@ -14,7 +13,6 @@
           @need-new-paragraph-history="addParagraphHistoryNextBy"
           @need-new-paragraph-history-by-summary="addParagraphHistoryBySummary"
           @delete-paragraph-history="DELETE_PARAGRAPH_HISTORY"
-          @set-focus-target="setFocusTarget"
         />
       </transition-group>
     </draggable>
@@ -27,6 +25,7 @@ import SummaryMoodTimeline from './SummaryMoodTimeline'
 import { mapGetters, mapMutations } from 'vuex'
 import types from '../mutation-types'
 import draggable from 'vuedraggable'
+import focus from './focus-target-meta'
 
 export default {
   components: {
@@ -61,25 +60,19 @@ export default {
       types.DELETE_PARAGRAPH_HISTORY
     ]),
     addParagraphHistory () {
-      this.$store.commit(types.FOCUS_ON_SUMMARY_FALSE)
+      this.$store.commit(types.SET_FOCUS_TARGET, focus.PARAGRAPH)
       this[types.ADD_PARAGRAPH_HISTORY]()
     },
     addParagraphHistoryNextBy (paragraphHistory) {
-      this.$store.commit(types.FOCUS_ON_SUMMARY_FALSE)
+      this.$store.commit(types.SET_FOCUS_TARGET, focus.PARAGRAPH)
       this[types.ADD_PARAGRAPH_HISTORY_NEXT_BY](paragraphHistory)
     },
     addParagraphHistoryBySummary (paragraphHistory) {
-      this.$store.commit(types.FOCUS_ON_SUMMARY_TRUE)
+      this.$store.commit(types.SET_FOCUS_TARGET, focus.PARAGRAPH_HISTORY_SUMMARY)
       this[types.ADD_PARAGRAPH_HISTORY_NEXT_BY](paragraphHistory)
     },
     toggleMetaController () {
       this.showMetaController = !this.showMetaController
-    },
-    setFocusTarget (target) {
-      this.focusTargetElement = target
-    },
-    setFocus () {
-      this.focusTargetElement.focus()
     }
   }
 }

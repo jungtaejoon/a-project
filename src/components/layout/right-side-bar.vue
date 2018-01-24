@@ -67,8 +67,3 @@ export default {
 }
 </script>
 <style src="../../assets/css/timeline.css"></style>
-<style>
-  .timeline:before {
-    left: 3.9%;
-  }
-</style>

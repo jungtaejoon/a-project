@@ -7,27 +7,50 @@
     >
       <i class="fa fa-fw ti-check-box"></i>
     </div>
-    <div class="timeline-panel wow slideInRight" @click.exact="changeLocationById(paragraphHistoryId)">
+    <div class="timeline-panel wow slideInRight">
       <div class="timeline-heading">
-        <textarea class="timeline-title" @click.stop="''" v-model="mood"></textarea>
+        <input
+          v-show="editingInput === 'mood-input'"
+          class="form-control mood-input"
+          type="text"
+          placeholder="mood"
+          v-model="mood"
+          @keydown.enter="editingInput = ''"
+          @blur="editingInput = ''"
+          @focus="$event.target.select()"
+        />
+        <span
+          v-show="editingInput !== 'mood-input'"
+          @click="editingInput = 'mood-input'"
+        >{{mood}}</span>
       </div>
       <hr>
       <div class="timeline-body">
-        <textarea @click.stop="''" v-model="summary"></textarea>
+        <input
+          v-show="editingInput === 'summary-input'"
+          class="form-control summary-input"
+          placeholder="summary"
+          name="summary"
+          v-model="summary"
+          @keydown.enter.prevent="addParagraphHistoryNextBy"
+          @keydown.enter="editingInput = ''"
+          @blur="editingInput = ''"
+          @focus="$event.target.select()"
+        />
+        <span
+          v-show="editingInput !== 'summary-input'"
+          @click="editingInput = 'summary-input'"
+        >{{summary || 'summary'}}</span>
       </div>
     </div>
   </li>
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
 import paragraphMoodMeta from './paragraph-mood-meta'
 import idPrefixMeta from './id-prefix-meta'
-import autosize from 'autosize'
 import types from '../mutation-types'
-import $ from 'jquery'
-// eslint-disable-next-line
-require('imports-loader?this=>window!../vendors/wow/dist/wow.min.js')
+import focus from './focus-target-meta'
 
 export default {
   props: [
@@ -40,9 +63,14 @@ export default {
     this.summary = this.initSummary
   },
   computed: {
-    ...mapGetters([
-      'paragraphHistories'
-    ]),
+    paragraphHistories: {
+      get () {
+        return this.$store.getters.paragraphHistories
+      },
+      set (value) {
+        this.$store.commit(types.UPDATE_PARAGRAPH_HISTORIES, value)
+      }
+    },
     mood: {
       get () {
         return this.$store.getters.mood(this.paragraphHistoryId)
@@ -69,22 +97,31 @@ export default {
   data () {
     return {
       ...idPrefixMeta,
-      paragraphMoodMeta
+      paragraphMoodMeta,
+      editingInput: ''
     }
   },
   mounted () {
-    const thisTitleTextarea = this.$el.querySelector('textarea.timeline-title')
-    const thisSummaryTextarea = this.$el.querySelector('.timeline-body > textarea')
-    autosize(thisTitleTextarea)
-    autosize(thisSummaryTextarea)
-    $(function () {
-      // eslint-disable-next-line
-      new WOW().init()
-    })
+    if (this.$store.getters.focusTarget === focus.TIMELINE_SUMMARY) {
+      console.log(this.$el.querySelector('.summary-input'))
+      setTimeout(() => {
+        this.editingInput = 'summary-input'
+        this.$el.querySelector('.summary-input').focus()
+      }, 100)
+    }
   },
   methods: {
     changeLocationById (id) {
       location.href = '#' + this.PARAGRAPH_HISTORY_ID_PREFIX + id
+    },
+    addParagraphHistoryNextBy () {
+      this.$store.commit(types.SET_FOCUS_TARGET, focus.TIMELINE_SUMMARY)
+      this.$store.commit(types.ADD_PARAGRAPH_HISTORY_NEXT_BY, {paragraphHistoryId: this.paragraphHistoryId, mood: this.mood})
+    }
+  },
+  updated () {
+    if (this.editingInput) {
+      this.$el.querySelector('.' + this.editingInput).focus()
     }
   }
 }
@@ -97,10 +134,6 @@ export default {
   div.timeline-panel.wow.slideInRight {
     background-color: #fff;
   }
-  div.timeline-panel.wow.slideInRight:hover {
-    cursor: pointer;
-  }
-
   .timeline > li > .timeline-badge {
     left: 5%;
   }

@@ -4,7 +4,7 @@ const state = {
   paragraphHistories: [],
   nextParagraphHistoryId: 0,
   nextParagraphId: 0,
-  focusOnSummary: false,
+  focusTarget: '',
   editing: false
 }
 
@@ -21,7 +21,7 @@ const getters = {
     const paragraphHistory = state.paragraphHistories.find(paragraphHistory => paragraphHistory.id === paragraphHistoryId)
     return paragraphHistory.paragraphs
   },
-  focusOnSummary: state => state.focusOnSummary,
+  focusTarget: state => state.focusTarget,
   edit: state => state.editing
 }
 
@@ -78,6 +78,9 @@ const mutations = {
   },
   [types.UPDATE_MOOD] (state, {paragraphHistoryId, value}) {
     state.paragraphHistories.find(paragraphHistory => paragraphHistory.id === paragraphHistoryId).mood = value
+  },
+  [types.SET_FOCUS_TARGET] (state, value) {
+    state.focusTarget = value
   },
   [types.FOCUS_ON_SUMMARY_TRUE] (state) {
     state.focusOnSummary = true

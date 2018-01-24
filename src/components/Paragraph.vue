@@ -16,6 +16,7 @@
 import autosize from 'autosize'
 import types from '../mutation-types'
 import idPrefixMeta from './id-prefix-meta'
+import focus from './focus-target-meta'
 
 export default {
   name: 'paragraph',
@@ -30,7 +31,7 @@ export default {
   mounted () {
     const thisTextareaElement = this.$el.querySelector('textarea')
     autosize(thisTextareaElement)
-    if (!this.$store.getters.focusOnSummary) setTimeout(() => thisTextareaElement.focus(), 100)
+    if (this.$store.getters.focusTarget === focus.PARAGRAPH) setTimeout(() => thisTextareaElement.focus(), 100)
     this.$emit('paragraph-mounted')
   },
   data () {

@@ -59,7 +59,6 @@
             @delete-paragraph="deleteParagraph"
             @content-changed="onContentChanged"
             @paragraph-mounted="lastContent = ''"
-            @set-focus-target="value => $emit('set-focus-target', value)"
           />
         </div>
       </div>
@@ -74,6 +73,7 @@ import paragraphMoodMeta from './paragraph-mood-meta'
 import { mapMutations } from 'vuex'
 import types from '../mutation-types'
 import idPrefixMeta from './id-prefix-meta'
+import focus from './focus-target-meta'
 
 export default {
   props: {
@@ -134,7 +134,7 @@ export default {
   },
   mounted () {
     this.paragraphs = this.$store.getters.paragraphs(this.id)
-    if (this.$store.getters.focusOnSummary) {
+    if (this.$store.getters.focusTarget === focus.PARAGRAPH_HISTORY_SUMMARY) {
       setTimeout(() => {
         this.editingInput = 'summary-input'
         this.$el.querySelector('.summary-input').focus()
