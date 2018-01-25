@@ -9,6 +9,9 @@
     </div>
     <div class="timeline-panel wow slideInRight">
       <div class="timeline-heading">
+       <span class="float-right fnt_size txt_font">
+                                    <i class="fa fa-fw ti-close removecard" @click="deleteParagraphHistory"></i>
+                                </span>
         <textarea
           rows="1"
           class="form-control mood-input"
@@ -106,6 +109,9 @@ export default {
     addParagraphHistoryNextBy () {
       this.$store.commit(types.SET_FOCUS_TARGET_TYPE, focus.TIMELINE_SUMMARY)
       this.$store.commit(types.ADD_PARAGRAPH_HISTORY_NEXT_BY, {paragraphHistoryId: this.paragraphHistoryId, mood: this.mood})
+    },
+    deleteParagraphHistory () {
+      this.$store.commit(types.DELETE_PARAGRAPH_HISTORY, this.paragraphHistoryId)
     }
   },
   updated () {
@@ -117,6 +123,9 @@ export default {
 </script>
 <style src="../assets/css/timeline.css"></style>
 <style scoped>
+  i.fa.fa-fw.ti-close.removecard {
+    cursor: pointer;
+  }
   .timeline-badge.lightSpeedIn.center:hover {
     cursor: pointer;
   }
@@ -131,6 +140,11 @@ export default {
   }
   textarea {
     border: none;
-    width: 100%;
+    background-color: transparent;
+    padding: 0 0 0 6px;
+    margin: 0;
+  }
+  element.style {
+    height: 19px;
   }
 </style>
