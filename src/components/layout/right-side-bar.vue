@@ -16,14 +16,18 @@
                       <!--timeline-->
                       <div>
                         <ul class="timeline">
-                          <summary-mood-timeline
-                            class="timeline-inverted"
-                            v-for="paragraphHistory in paragraphHistories"
-                            :key="paragraphHistory.id"
-                            :paragraphHistoryId="paragraphHistory.id"
-                            :initMood="paragraphHistory.mood"
-                            :initSummary="paragraphHistory.summary"
-                          ></summary-mood-timeline>
+                          <draggable v-model="paragraphHistories" :options="{ghostClass: 'ghost'}">
+                            <transition-group name="paragraph-history-list">
+                              <summary-mood-timeline
+                                class="timeline-inverted"
+                                v-for="paragraphHistory in paragraphHistories"
+                                :key="paragraphHistory.id"
+                                :paragraphHistoryId="paragraphHistory.id"
+                                :initMood="paragraphHistory.mood"
+                                :initSummary="paragraphHistory.summary"
+                              ></summary-mood-timeline>
+                            </transition-group>
+                          </draggable>
                         </ul>
                       </div>
                     </div>
@@ -39,11 +43,12 @@
 </template>
 <script>
 import SummaryMoodTimeline from '../SummaryMoodTimeline'
+import draggable from 'vuedraggable'
 import types from '../../mutation-types'
 
 export default {
   components: {
-    SummaryMoodTimeline
+    SummaryMoodTimeline, draggable
   },
   computed: {
     paragraphHistories: {
@@ -67,3 +72,15 @@ export default {
 }
 </script>
 <style src="../../assets/css/timeline.css"></style>
+<style scoped>
+  .ghost {
+    opacity: .5;
+    background: #C8EBFB;
+  }
+  .timeline-inverted {
+    transition: all .5s;
+  }
+  .paragraph-history-list-enter, .paragraph-history-list-leave-active {
+    display: none;
+  }
+</style>

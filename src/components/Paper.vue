@@ -74,15 +74,6 @@ export default {
     toggleMetaController () {
       this.showMetaController = !this.showMetaController
     }
-  },
-  watch: {
-    paragraphHistories () {
-      if (typeof this.$store.getters.focusTarget === 'object') {
-        setTimeout(() => {
-          this.$store.getters.focusTarget.focus()
-        }, 70)
-      }
-    }
   }
 }
 </script>

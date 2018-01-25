@@ -17,12 +17,23 @@ import clear_header from './components/layout/clear_header'
 import left_side from './components/layout/left-side/default/left-side'
 // eslint-disable-next-line
 import right_side from './components/layout/right-side'
+import types from './mutation-types'
 
 export default {
   components: {
     clear_header,
     left_side,
     right_side
+  },
+  computed: {
+    paragraphHistories: {
+      get () {
+        return this.$store.getters.paragraphHistories
+      },
+      set (value) {
+        this.$store.commit(types.UPDATE_PARAGRAPH_HISTORIES, value)
+      }
+    }
   },
   created: function () {
   },
@@ -39,6 +50,13 @@ export default {
       } else {
         document.getElementById('right').style.marginTop = -56 + 'px'
       }
+    }
+  },
+  watch: {
+    paragraphHistories () {
+      this.$nextTick(() => setTimeout(() => {
+        this.$el.querySelector('#' + this.$store.getters.focusTargetType + (this.$store.getters.nextParagraphHistoryId - 1)).focus()
+      }, 70))
     }
   }
 }

@@ -1,7 +1,7 @@
 <template>
   <li>
     <div
-      class="timeline-badge danger wow lightSpeedIn center"
+      class="timeline-badge lightSpeedIn center"
       @click.exact="changeLocationById(paragraphHistoryId)"
       :style="{'background-color': moodColor}"
     >
@@ -9,50 +9,43 @@
     </div>
     <div class="timeline-panel wow slideInRight">
       <div class="timeline-heading">
-        <input
-          v-show="editingInput === 'mood-input'"
+        <textarea
+          rows="1"
           class="form-control mood-input"
-          type="text"
-          placeholder="mood"
+          :id="this.paragraphHistoryId"
+          :placeholder="'mood'"
           v-model="mood"
-          @keydown.enter="editingInput = ''"
-          @blur="editingInput = ''"
           @focus="$event.target.select()"
-        />
-        <span
-          v-show="editingInput !== 'mood-input'"
-          @click="editingInput = 'mood-input'"
-        >{{mood}}</span>
+        ></textarea>
       </div>
       <hr>
       <div class="timeline-body">
-        <input
-          v-show="editingInput === 'summary-input'"
+        <textarea
+          rows="1"
           class="form-control summary-input"
-          placeholder="summary"
-          name="summary"
+          :id="focus.TIMELINE_SUMMARY + this.paragraphHistoryId"
+          :placeholder="'summary'"
           v-model="summary"
-          @keydown.enter.prevent="addParagraphHistoryNextBy"
-          @keydown.enter="editingInput = ''"
-          @blur="editingInput = ''"
           @focus="$event.target.select()"
-        />
-        <span
-          v-show="editingInput !== 'summary-input'"
-          @click="editingInput = 'summary-input'"
-        >{{summary || 'summary'}}</span>
+          @keydown.enter.prevent="addParagraphHistoryNextBy"
+        ></textarea>
       </div>
     </div>
   </li>
 </template>
 
 <script>
+import CommonTextArea from './CommonTextArea/CommonTextArea'
 import paragraphMoodMeta from './paragraph-mood-meta'
 import idPrefixMeta from './id-prefix-meta'
 import types from '../mutation-types'
 import focus from './focus-target-meta'
+import autosize from 'autosize'
 
 export default {
+  components: {
+    CommonTextArea
+  },
   props: [
     'paragraphHistoryId',
     'initMood',
@@ -96,26 +89,22 @@ export default {
   },
   data () {
     return {
-      ...idPrefixMeta,
+      idPrefixMeta,
       paragraphMoodMeta,
-      editingInput: ''
+      editingInput: '',
+      focus
     }
   },
   mounted () {
-    if (this.$store.getters.focusTarget === focus.TIMELINE_SUMMARY) {
-      console.log(this.$el.querySelector('.summary-input'))
-      setTimeout(() => {
-        this.editingInput = 'summary-input'
-        this.$el.querySelector('.summary-input').focus()
-      }, 100)
-    }
+    autosize(this.$el.querySelector('.mood-input'))
+    autosize(this.$el.querySelector('.summary-input'))
   },
   methods: {
     changeLocationById (id) {
-      location.href = '#' + this.PARAGRAPH_HISTORY_ID_PREFIX + id
+      location.href = '#' + idPrefixMeta.PARAGRAPH_HISTORY_ID_PREFIX + id
     },
     addParagraphHistoryNextBy () {
-      this.$store.commit(types.SET_FOCUS_TARGET, focus.TIMELINE_SUMMARY)
+      this.$store.commit(types.SET_FOCUS_TARGET_TYPE, focus.TIMELINE_SUMMARY)
       this.$store.commit(types.ADD_PARAGRAPH_HISTORY_NEXT_BY, {paragraphHistoryId: this.paragraphHistoryId, mood: this.mood})
     }
   },
@@ -128,16 +117,16 @@ export default {
 </script>
 <style src="../assets/css/timeline.css"></style>
 <style scoped>
-  .timeline-badge.danger.wow.lightSpeedIn.center:hover {
+  .timeline-badge.lightSpeedIn.center:hover {
     cursor: pointer;
   }
   div.timeline-panel.wow.slideInRight {
     background-color: #fff;
   }
-  .timeline > li > .timeline-badge {
+  .timeline li > .timeline-badge {
     left: 5%;
   }
-  .timeline > li > .timeline-panel {
+  .timeline li > .timeline-panel {
     width: 86%;
   }
   textarea {

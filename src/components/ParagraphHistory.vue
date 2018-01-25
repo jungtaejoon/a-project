@@ -10,22 +10,25 @@
             <h3 class="card-title text-light"><i class="ti-menu"></i> {{moodText}}</h3>
             <div class="row">
               <div class="col-4">
-                <common-text-area
-                  :content.sync="mood"
-                  :id="this.id"
+                <textarea
+                  rows="1"
+                  class="form-control mood-input"
+                  :id="id"
                   :placeholder="'mood'"
-                  :elemClass="'mood-input'"
-                ></common-text-area>
+                  v-model="mood"
+                  @focus="$event.target.select()"
+                ></textarea>
               </div>
               <div class="col-8">
-                <common-text-area
-                  :content.sync="summary"
-                  :id="this.id"
-                  :idPrefix="focus.PARAGRAPH_HISTORY_SUMMARY"
+                <textarea
+                  rows="1"
+                  class="form-control summary-input"
+                  :id="focus.PARAGRAPH_HISTORY_SUMMARY + id"
                   :placeholder="'summary'"
-                  :elemClass="'summary-input'"
+                  v-model="summary"
+                  @focus="$event.target.select()"
                   @keydown.enter.prevent="$emit('need-new-paragraph-history-by-summary', {paragraphHistoryId: id, mood})"
-                />
+                ></textarea>
               </div>
             </div>
           </div>
@@ -56,6 +59,7 @@ import types from '../mutation-types'
 import idPrefixMeta from './id-prefix-meta'
 import focus from './focus-target-meta'
 import CommonTextArea from './CommonTextArea/CommonTextArea'
+import autosize from 'autosize'
 
 export default {
   props: {
@@ -78,7 +82,7 @@ export default {
   computed: {
     summary: {
       get () {
-        return this.$store.getters.findParagraphHistory(this.id).summary
+        return this.$store.getters.summary(this.id)
       },
       set (value) {
         this.$store.commit(types.UPDATE_SUMMARY, {paragraphHistoryId: this.id, value})
@@ -86,7 +90,7 @@ export default {
     },
     mood: {
       get () {
-        return this.$store.getters.findParagraphHistory(this.id).mood
+        return this.$store.getters.mood(this.id)
       },
       set (value) {
         this.$store.commit(types.UPDATE_MOOD, {paragraphHistoryId: this.id, value})
@@ -114,13 +118,8 @@ export default {
   },
   mounted () {
     this.paragraphs = this.$store.getters.paragraphs(this.id)
-    this.$nextTick(() => this.$store.commit(types.SET_FOCUS_TARGET, this.$el.querySelector('#' + this.$store.getters.focusTargetType + this.id)))
-//    if (this.$store.getters.focusTarget === focus.PARAGRAPH_HISTORY_SUMMARY) {
-//      setTimeout(() => {
-//        this.editingInput = 'summary-input'
-//        this.$el.querySelector('.summary-input').focus()
-//      }, 100)
-//    }
+    autosize(this.$el.querySelector('.mood-input'))
+    autosize(this.$el.querySelector('.summary-input'))
   },
   methods: {
     ...mapMutations([
@@ -163,5 +162,14 @@ div.card-body.text-dark {
 }
 i.fa.fa-fw.ti-close.removecard {
   cursor: pointer;
+}
+textarea {
+  border: none;
+  background-color: transparent;
+  padding: 0 0 0 6px;
+  margin: 0;
+}
+element.style {
+  height: 19px;
 }
 </style>
