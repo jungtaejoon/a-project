@@ -1,16 +1,19 @@
 import types from '../../mutation-types'
+import focus from '../../components/focus-target-meta'
 
 const state = {
   paragraphHistories: [],
   nextParagraphHistoryId: 0,
   nextParagraphId: 0,
-  focusTarget: '',
+  focusTarget: {},
+  focusTargetType: focus.PARAGRAPH,
   editing: false
 }
 
 const getters = {
   paragraphHistories: state => state.paragraphHistories,
   findParagraphHistory: state => paragraphHistoryId => state.paragraphHistories.find(paragraphHistory => paragraphHistory.id === paragraphHistoryId),
+  nextParagraphHistoryId: state => state.nextParagraphHistoryId,
   mood: state => paragraphHistoryId => state.paragraphHistories.find(paragraphHistory => paragraphHistory.id === paragraphHistoryId).mood,
   summary: state => paragraphHistoryId => state.paragraphHistories.find(paragraphHistory => paragraphHistory.id === paragraphHistoryId).summary,
   lastParagraphHistoryMood: state => {
@@ -22,6 +25,7 @@ const getters = {
     return paragraphHistory.paragraphs
   },
   focusTarget: state => state.focusTarget,
+  focusTargetType: state => state.focusTargetType,
   edit: state => state.editing
 }
 
@@ -82,11 +86,8 @@ const mutations = {
   [types.SET_FOCUS_TARGET] (state, value) {
     state.focusTarget = value
   },
-  [types.FOCUS_ON_SUMMARY_TRUE] (state) {
-    state.focusOnSummary = true
-  },
-  [types.FOCUS_ON_SUMMARY_FALSE] (state) {
-    state.focusOnSummary = false
+  [types.SET_FOCUS_TARGET_TYPE] (state, value) {
+    state.focusTargetType = value
   },
   [types.EDITING_IS_TRUE] (state) {
     state.editing = true

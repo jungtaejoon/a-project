@@ -10,41 +10,22 @@
             <h3 class="card-title text-light"><i class="ti-menu"></i> {{moodText}}</h3>
             <div class="row">
               <div class="col-4">
-                <input
-                  v-show="editingInput === 'mood-input'"
-                  class="form-control mood-input"
-                  type="text"
-                  placeholder="mood"
-                  v-model="mood"
-                  @mouseover="editingIsTrue"
-                  @mouseleave="editingIsFalse"
-                  @keydown.enter="editingInput = ''"
-                  @blur="editingInput = ''"
-                  @focus="$event.target.select()"
-                />
-                <span
-                  v-show="editingInput !== 'mood-input'"
-                  @click="editingInput = 'mood-input'"
-                >{{mood}}</span>
+                <common-text-area
+                  :content.sync="mood"
+                  :id="this.id"
+                  :placeholder="'mood'"
+                  :elemClass="'mood-input'"
+                ></common-text-area>
               </div>
               <div class="col-8">
-                <input
-                  v-show="editingInput === 'summary-input'"
-                  class="form-control summary-input"
-                  placeholder="summary"
-                  name="summary"
-                  v-model="summary"
-                  @mouseover="editingIsTrue"
-                  @mouseleave="editingIsFalse"
+                <common-text-area
+                  :content.sync="summary"
+                  :id="this.id"
+                  :idPrefix="focus.PARAGRAPH_HISTORY_SUMMARY"
+                  :placeholder="'summary'"
+                  :elemClass="'summary-input'"
                   @keydown.enter.prevent="$emit('need-new-paragraph-history-by-summary', {paragraphHistoryId: id, mood})"
-                  @keydown.enter="editingInput = ''"
-                  @blur="editingInput = ''"
-                  @focus="$event.target.select()"
                 />
-                <span
-                  v-show="editingInput !== 'summary-input'"
-                  @click="editingInput = 'summary-input'"
-                >{{summary || 'summary'}}</span>
               </div>
             </div>
           </div>
@@ -74,6 +55,7 @@ import { mapMutations } from 'vuex'
 import types from '../mutation-types'
 import idPrefixMeta from './id-prefix-meta'
 import focus from './focus-target-meta'
+import CommonTextArea from './CommonTextArea/CommonTextArea'
 
 export default {
   props: {
@@ -83,17 +65,15 @@ export default {
     },
     initMood: {
       type: String,
-      default: 'default',
-      required: false
+      default: 'default'
     },
     showMetaController: {
       type: Boolean,
-      required: false,
       default: false
     }
   },
   components: {
-    Paragraph
+    Paragraph, CommonTextArea
   },
   computed: {
     summary: {
@@ -125,21 +105,22 @@ export default {
       paragraphs: [],
       lastContent: '',
       editingInput: '',
-      isMoodEditing: false,
-      isSummaryEditing: false
+      focus
     }
   },
   created () {
+    this.mood = this.initMood
     this[types.ADD_EMPTY_PARAGRAPH](this.id)
   },
   mounted () {
     this.paragraphs = this.$store.getters.paragraphs(this.id)
-    if (this.$store.getters.focusTarget === focus.PARAGRAPH_HISTORY_SUMMARY) {
-      setTimeout(() => {
-        this.editingInput = 'summary-input'
-        this.$el.querySelector('.summary-input').focus()
-      }, 100)
-    }
+    this.$nextTick(() => this.$store.commit(types.SET_FOCUS_TARGET, this.$el.querySelector('#' + this.$store.getters.focusTargetType + this.id)))
+//    if (this.$store.getters.focusTarget === focus.PARAGRAPH_HISTORY_SUMMARY) {
+//      setTimeout(() => {
+//        this.editingInput = 'summary-input'
+//        this.$el.querySelector('.summary-input').focus()
+//      }, 100)
+//    }
   },
   methods: {
     ...mapMutations([

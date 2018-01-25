@@ -2,7 +2,7 @@
   <div class="paragraph-card">
    <textarea
       name=""
-      :id="PARAGRAPH_ID_PREFIX + id"
+      :id="focus.PARAGRAPH + id"
       v-model="content"
       @mouseover="editingIsTrue"
       @mouseleave="editingIsFalse"
@@ -31,14 +31,14 @@ export default {
   mounted () {
     const thisTextareaElement = this.$el.querySelector('textarea')
     autosize(thisTextareaElement)
-    if (this.$store.getters.focusTarget === focus.PARAGRAPH) setTimeout(() => thisTextareaElement.focus(), 100)
     this.$emit('paragraph-mounted')
   },
   data () {
     return {
       ...idPrefixMeta,
       confirmedContent: this.initContent,
-      content: this.initContent
+      content: this.initContent,
+      focus
     }
   },
   methods: {

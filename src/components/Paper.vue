@@ -60,19 +60,28 @@ export default {
       types.DELETE_PARAGRAPH_HISTORY
     ]),
     addParagraphHistory () {
-      this.$store.commit(types.SET_FOCUS_TARGET, focus.PARAGRAPH)
+      this.$store.commit(types.SET_FOCUS_TARGET_TYPE, focus.PARAGRAPH)
       this[types.ADD_PARAGRAPH_HISTORY]()
     },
     addParagraphHistoryNextBy (paragraphHistory) {
-      this.$store.commit(types.SET_FOCUS_TARGET, focus.PARAGRAPH)
+      this.$store.commit(types.SET_FOCUS_TARGET_TYPE, focus.PARAGRAPH)
       this[types.ADD_PARAGRAPH_HISTORY_NEXT_BY](paragraphHistory)
     },
     addParagraphHistoryBySummary (paragraphHistory) {
-      this.$store.commit(types.SET_FOCUS_TARGET, focus.PARAGRAPH_HISTORY_SUMMARY)
+      this.$store.commit(types.SET_FOCUS_TARGET_TYPE, focus.PARAGRAPH_HISTORY_SUMMARY)
       this[types.ADD_PARAGRAPH_HISTORY_NEXT_BY](paragraphHistory)
     },
     toggleMetaController () {
       this.showMetaController = !this.showMetaController
+    }
+  },
+  watch: {
+    paragraphHistories () {
+      if (typeof this.$store.getters.focusTarget === 'object') {
+        setTimeout(() => {
+          this.$store.getters.focusTarget.focus()
+        }, 70)
+      }
     }
   }
 }
